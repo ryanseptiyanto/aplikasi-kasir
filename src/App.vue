@@ -1,7 +1,7 @@
 <template>
-  <div class="container">
-    <h1>Aplikasi Kasir</h1>
-    <p>Ini tampilan awal Vue!</p>
+  <div id="app">
+    <!-- Kamu bisa tambahkan header/navbar di sini jika mau -->
+    <router-view/>
   </div>
 </template>
 
@@ -12,8 +12,8 @@ export default {
 </script>
 
 <style>
-.container {
-  padding: 2rem;
+/* style global jika perlu */
+#app {
   font-family: sans-serif;
 }
 </style>

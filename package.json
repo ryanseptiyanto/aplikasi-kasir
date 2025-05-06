@@ -6,9 +6,10 @@
   "scripts": {
     "start": "electron .",
     "dev:vue": "vite",
-    "dev:electron": "nodemon --watch main.js --exec \"electron .\"",
+    "dev:electron": "npx wait-on http://localhost:5173 && npx nodemon --watch main.js --exec \"electron .\"",
     "build": "vite build",
-    "dev": "concurrently -k \"npm run dev:vue\" \"npm run dev:electron\""
+    "dev": "concurrently -k \"npm run dev:vue\" \"npm run dev:electron\"",
+    "rebuild": "electron-rebuild -f -w better-sqlite3"
   },
   "keywords": [],
   "author": "",
@@ -17,10 +18,15 @@
     "@vitejs/plugin-vue": "^5.2.3",
     "concurrently": "^9.1.2",
     "electron": "^36.1.0",
+    "electron-rebuild": "^3.2.9",
     "nodemon": "^3.1.10",
-    "vite": "^6.3.5"
+    "vite": "^6.3.5",
+    "wait-on": "^8.0.3"
   },
   "dependencies": {
-    "vue": "^3.5.13"
+    "bcrypt": "^5.1.1",
+    "better-sqlite3": "^11.9.1",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.1"
   }
 }

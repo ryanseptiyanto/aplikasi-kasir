@@ -4,15 +4,15 @@ import path from 'path'
 
 export default defineConfig({
   plugins: [vue()],
-  root: './',
   base: './',
+  publicDir: 'public',    // folder aset statik, bisa kosong kalau tak terpakai
   build: {
-    outDir: 'dist',        // Output hasil build
-    emptyOutDir: true      // Kosongkan dulu folder dist sebelum build
+    outDir: 'dist',
+    emptyOutDir: true
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src') // Untuk import seperti '@/komponen'
+      '@': path.resolve(__dirname, 'src')
     }
   }
 })

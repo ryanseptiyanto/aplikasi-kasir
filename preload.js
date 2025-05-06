@@ -1,5 +1,6 @@
-const { contextBridge } = require('electron');
+const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('api', {
-  // fungsi komunikasi frontend-backend
+    login: (u,p) => ipcRenderer.invoke('login', u, p),
+    fetchDashboard: () => ipcRenderer.invoke('fetch-dashboard'),
 });
