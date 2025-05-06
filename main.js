@@ -6,6 +6,7 @@ const isDev = !app.isPackaged;
 // import handler
 const { registerAuthHandler }      = require('./handlers/authHandler');
 const { registerDashboardHandler } = require('./handlers/dashboardHandler');
+const { registerProductHandler }   = require('./handlers/productHandler');
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -21,6 +22,7 @@ function createWindow() {
 
 app.whenReady().then(() => {
   createWindow();
-  registerAuthHandler();      // dari authHandler.js
-  registerDashboardHandler(); // baru
+  registerAuthHandler();
+  registerDashboardHandler();
+  registerProductHandler();
 });
