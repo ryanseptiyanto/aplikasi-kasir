@@ -1,14 +1,16 @@
 // ─ src/router.js ─────────────────────────
 import { createRouter, createWebHashHistory } from 'vue-router';
-import Login     from './views/Login.vue';
+import Login from './views/Login.vue';
 import Dashboard from './views/Dashboard.vue';
+import Products from './views/Products.vue'
 
 const router = createRouter({
   history: createWebHashHistory(),
   routes: [
     { path:'/',       redirect:'/login' },
     { path:'/login',  component:Login },
-    { path:'/dashboard', component:Dashboard }
+    { path:'/dashboard', component:Dashboard },
+    { path:'/products', component: Products }
   ]
 });
 
