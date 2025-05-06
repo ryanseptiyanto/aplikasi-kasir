@@ -2,15 +2,25 @@
   "name": "aplikasi-kasir",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "electron .",
+    "dev:vue": "vite",
+    "dev:electron": "nodemon --watch main.js --exec \"electron .\"",
+    "build": "vite build",
+    "dev": "concurrently -k \"npm run dev:vue\" \"npm run dev:electron\""
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.3",
+    "concurrently": "^9.1.2",
     "electron": "^36.1.0",
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.1.10",
+    "vite": "^6.3.5"
+  },
+  "dependencies": {
+    "vue": "^3.5.13"
   }
 }
