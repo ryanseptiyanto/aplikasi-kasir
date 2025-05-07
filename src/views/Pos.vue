@@ -109,12 +109,6 @@
             </div>
           </div>
   
-          <!-- Tombol Bayar & Clear -->
-          <div class="d-flex justify-content-end mb-4">
-            <button class="btn btn-secondary me-2" @click="clearCart()">Clear</button>
-            <button class="btn btn-success" @click="openPaymentModal()" :disabled="cart.length===0">Bayar</button>
-          </div>
-  
           <!-- Modal Pembayaran -->
           <div class="modal fade" id="paymentModal" tabindex="-1" ref="paymentModalEl">
             <div class="modal-dialog">
@@ -145,7 +139,16 @@
             </div>
           </div>
         </div>
-      </div>
+        
+        <!-- Footer untuk Tombol -->
+        <footer class="footer bg-white border-top py-3">
+        <div class="container-xl d-flex justify-content-end">
+            <button class="btn btn-secondary me-2" @click="clearCart()">Clear</button>
+            <button class="btn btn-success" @click="openPaymentModal()" :disabled="cart.length===0">Bayar</button>
+        </div>
+        </footer>
+        </div>
+        
     </div>
   </template>
   
