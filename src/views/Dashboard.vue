@@ -6,6 +6,7 @@
           <router-link to="/dashboard" class="navbar-brand">Mini Kasir</router-link>
           <div class="navbar-nav ms-auto">
             <router-link to="/products" class="nav-link">Produk</router-link>
+            <router-link to="/pos" class="nav-link">Kasir</router-link>
             <span class="nav-link">Halo, {{ user.username }}</span>
             <button class="btn btn-outline-danger btn-sm" @click="logout">Logout</button>
           </div>

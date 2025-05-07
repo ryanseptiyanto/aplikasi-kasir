@@ -24,9 +24,6 @@ db.prepare(`
   )
 `).run();
 
-// backend/db.js
-// … existing code …
-
 // Tabel penampung satuan & harga per produk
 db.prepare(`
   CREATE TABLE IF NOT EXISTS product_units (
@@ -47,6 +44,34 @@ db.prepare(`
     faktur TEXT,
     tanggal TEXT,
     total REAL
+  )
+`).run();
+
+// Tabel Transaksi
+db.prepare(`
+  CREATE TABLE IF NOT EXISTS transaksi (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    faktur TEXT UNIQUE,
+    tanggal TEXT,
+    total REAL,
+    kasir_id INTEGER,
+    FOREIGN KEY (kasir_id) REFERENCES users(id)
+  )
+`).run();
+
+// Tabel Detail Transaksi
+db.prepare(`
+  CREATE TABLE IF NOT EXISTS transaksi_detail (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    transaksi_id INTEGER NOT NULL,
+    product_id INTEGER NOT NULL,
+    unit_id INTEGER NOT NULL,
+    qty INTEGER NOT NULL,
+    price REAL NOT NULL,
+    subtotal REAL NOT NULL,
+    FOREIGN KEY (transaksi_id) REFERENCES transaksi(id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products(id),
+    FOREIGN KEY (unit_id) REFERENCES product_units(id)
   )
 `).run();
 

@@ -7,6 +7,7 @@ const isDev = !app.isPackaged;
 const { registerAuthHandler }      = require('./handlers/authHandler');
 const { registerDashboardHandler } = require('./handlers/dashboardHandler');
 const { registerProductHandler }   = require('./handlers/productHandler');
+const { registerTransactionHandler } = require('./handlers/transactionHandler')
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -25,4 +26,5 @@ app.whenReady().then(() => {
   registerAuthHandler();
   registerDashboardHandler();
   registerProductHandler();
+  registerTransactionHandler()
 });
