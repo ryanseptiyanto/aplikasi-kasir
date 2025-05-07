@@ -275,7 +275,7 @@
         // cetak struk (dev mode: open window + print dialog)
         await window.api.printReceipt(res.faktur);
         // notifikasi sukses
-        Swal.fire('Sukses', `Faktur: ${res.faktur}\nKembalian: ${formatCurrency(res.kembalian)}`, 'success');
+        Swal.fire('Sukses', `Nomor: ${res.faktur}\nKembalian: ${formatCurrency(res.kembalian)}`, 'success');
         // tutup modal & reset keranjang
         paymentModal.value.hide();
         clearCart();

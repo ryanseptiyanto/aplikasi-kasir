@@ -2,7 +2,7 @@
     <div class="receipt p-4" id="receipt">
       <h3 class="text-center mb-3">Mini Kasir</h3>
       <div class="mb-2">
-        <div><strong>Faktur:</strong> {{ faktur }}</div>
+        <div><strong>Nomor:</strong> {{ faktur }}</div>
         <div><strong>Tanggal:</strong> {{ header.tanggal }}</div>
         <div><strong>Kasir:</strong> {{ header.kasir }}</div>
       </div>
