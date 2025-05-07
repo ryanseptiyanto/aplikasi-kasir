@@ -24,6 +24,22 @@ db.prepare(`
   )
 `).run();
 
+// backend/db.js
+// … existing code …
+
+// Tabel penampung satuan & harga per produk
+db.prepare(`
+  CREATE TABLE IF NOT EXISTS product_units (
+    id           INTEGER PRIMARY KEY AUTOINCREMENT,
+    product_id   INTEGER NOT NULL,
+    unit_name    TEXT    NOT NULL,             -- nama satuan, e.g. pcs, renteng, dus
+    quantity     INTEGER NOT NULL,             -- konversi ke satuan dasar (pcs)
+    price_regular REAL   NOT NULL,             -- harga eceran
+    price_member  REAL   NOT NULL,             -- harga member
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+  )
+`).run();
+
 // ── Tabel Transaksi ──
 db.prepare(`
   CREATE TABLE IF NOT EXISTS transaksi (
