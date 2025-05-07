@@ -3,14 +3,17 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import Login     from './views/Login.vue'
 import Dashboard from './views/Dashboard.vue'
 import Products  from './views/Products.vue'
-import Pos       from './views/Pos.vue'      // ← import Pos.vue
+import Pos       from './views/Pos.vue'
+import Receipt from './views/Receipt.vue'
+
 
 const routes = [
   { path: '/',         redirect: '/login' },
   { path: '/login',    component: Login },
   { path: '/dashboard',component: Dashboard },
   { path: '/products', component: Products },
-  { path: '/pos',      component: Pos }     // ← tambahkan route /pos
+  { path: '/pos',      component: Pos },
+  { path: '/receipt/:faktur', component: Receipt }
 ]
 
 const router = createRouter({
