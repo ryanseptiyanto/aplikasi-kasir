@@ -270,10 +270,15 @@
           })),
           bayar: payment.value
         }
-        const res = await window.api.createTransaction(payload)
-        Swal.fire('Sukses', `Faktur: ${res.faktur}\nKembalian: ${formatCurrency(res.kembalian)}`, 'success')
-        paymentModal.value.hide()
-        clearCart()
+        // simpan transaksi
+        const res = await window.api.createTransaction(payload);
+        // cetak struk (dev mode: open window + print dialog)
+        await window.api.printReceipt(res.faktur);
+        // notifikasi sukses
+        Swal.fire('Sukses', `Faktur: ${res.faktur}\nKembalian: ${formatCurrency(res.kembalian)}`, 'success');
+        // tutup modal & reset keranjang
+        paymentModal.value.hide();
+        clearCart();
       }
   
       const formatCurrency = (v) =>
