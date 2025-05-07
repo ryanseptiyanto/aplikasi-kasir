@@ -1,4 +1,4 @@
-// ─ backend/db.js ──────────────────────────────
+// ─ backend/db.js
 const Database = require('better-sqlite3');
 const db = new Database('database/kasir.db');
 
@@ -34,16 +34,6 @@ db.prepare(`
     price_regular REAL   NOT NULL,             -- harga eceran
     price_member  REAL   NOT NULL,             -- harga member
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
-  )
-`).run();
-
-// ── Tabel Transaksi ──
-db.prepare(`
-  CREATE TABLE IF NOT EXISTS transaksi (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    faktur TEXT,
-    tanggal TEXT,
-    total REAL
   )
 `).run();
 
