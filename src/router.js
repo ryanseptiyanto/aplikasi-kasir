@@ -1,11 +1,11 @@
 // src/router.js
 import { createRouter, createWebHashHistory } from 'vue-router'
-import Login     from './views/Login.vue'
+import Login from './views/Login.vue'
 import Dashboard from './views/Dashboard.vue'
-import Products  from './views/Products.vue'
-import Pos       from './views/Pos.vue'
+import Products from './views/Products.vue'
+import Pos from './views/Pos.vue'
 import Receipt from './views/Receipt.vue'
-
+import Members from './views/Members.vue'
 
 const routes = [
   { path: '/',         redirect: '/login' },
@@ -13,7 +13,8 @@ const routes = [
   { path: '/dashboard',component: Dashboard },
   { path: '/products', component: Products },
   { path: '/pos',      component: Pos },
-  { path: '/receipt/:faktur', component: Receipt }
+  { path: '/receipt/:faktur', component: Receipt },
+  { path: '/members',  component: Members },
 ]
 
 const router = createRouter({
