@@ -3,14 +3,18 @@ const { ipcMain } = require('electron');
 const db = require('../backend/db');
 
 function registerProductHandler() {
-  // hapus handler lama jika sudah ada
+  // Hapus handler lama bila ada
   ipcMain.removeHandler('fetch-products');
   ipcMain.removeHandler('create-product');
   ipcMain.removeHandler('update-product');
   ipcMain.removeHandler('delete-product');
+  ipcMain.removeHandler('fetch-units');          // ← bersihkan dulu
 
-  // daftar ulang handler
-  ipcMain.handle('fetch-products',    ()           => db.prepare('SELECT * FROM products ORDER BY id DESC').all());
+  // Daftarkan kembali semua handler
+  ipcMain.handle('fetch-products',    ()           => 
+    db.prepare('SELECT * FROM products ORDER BY id DESC').all()
+  );
+
   ipcMain.handle('create-product',    (e, {product, units}) => {
     const info = db.prepare(`
       INSERT INTO products (name, barcode, price, stock, min_stock)
@@ -30,6 +34,7 @@ function registerProductHandler() {
 
     return { id: pid, ...product };
   });
+
   ipcMain.handle('update-product',    (e, {product, units}) => {
     db.prepare(`
       UPDATE products SET
@@ -54,9 +59,17 @@ function registerProductHandler() {
 
     return product;
   });
+
   ipcMain.handle('delete-product',    (e, id)     => {
     db.prepare('DELETE FROM products WHERE id = ?').run(id);
     return { success: true, id };
+  });
+
+  // **Handler baru untuk fetch-units**
+  ipcMain.handle('fetch-units', (event, productId) => {
+    return db
+      .prepare('SELECT * FROM product_units WHERE product_id = ?')
+      .all(productId);
   });
 }
 
