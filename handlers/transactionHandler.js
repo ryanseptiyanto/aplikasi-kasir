@@ -2,13 +2,25 @@
 const { ipcMain, BrowserWindow, app } = require('electron');
 const db = require('../backend/db');
 const path = require('path');
-const { v4: uuidv4 } = require('uuid');
 
 function registerTransactionHandler() {
   // Create Transaction (header + details)
   ipcMain.handle('create-transaction', (event, { kasir_id, items, bayar }) => {
-    const faktur = uuidv4();
-    const tanggal = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    const now = new Date();
+    // Generate faktur: YYMMDD + 5-digit sequence per day
+    const yy = String(now.getFullYear() % 100).padStart(2, '0');
+    const mm = String(now.getMonth() + 1).padStart(2, '0');
+    const dd = String(now.getDate()).padStart(2, '0');
+    const prefix = `${yy}${mm}${dd}`;
+    // Count existing transactions for today
+    const { cnt } = db.prepare(
+      'SELECT COUNT(*) AS cnt FROM transaksi WHERE faktur LIKE ?'
+    ).get(`${prefix}%`);
+    const seq = cnt + 1;
+    const seqStr = String(seq).padStart(5, '0');
+    const faktur = prefix + seqStr;
+
+    const tanggal = now.toISOString().slice(0, 19).replace('T', ' ');
     const total = items.reduce((sum, i) => sum + i.subtotal, 0);
 
     // Simpan header transaksi
@@ -57,7 +69,7 @@ function registerTransactionHandler() {
     `).all(faktur);
   });
 
-  // Print Receipt (Development Mode: open window & print dialog)
+  // Print Receipt (Development Mode)
   ipcMain.handle('print-receipt', async (event, faktur) => {
     const isDev = !app.isPackaged;
     const win = new BrowserWindow({
@@ -80,7 +92,6 @@ function registerTransactionHandler() {
     // Once loaded, trigger print dialog
     win.webContents.on('did-finish-load', () => {
       win.webContents.print({ printBackground: true }, (success, errorType) => {
-        // In dev mode, keep window open for preview
         if (!isDev) win.close();
       });
     });
