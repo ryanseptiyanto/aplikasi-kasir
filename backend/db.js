@@ -31,7 +31,7 @@ db.prepare(`
     code     TEXT UNIQUE,
     name     TEXT NOT NULL,
     phone    TEXT,
-    created  TEXT
+    created  TEXT NOT NULL
   )
 `).run();
 
