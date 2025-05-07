@@ -24,6 +24,18 @@ db.prepare(`
   )
 `).run();
 
+// ── Tabel Member ──
+db.prepare(`
+  CREATE TABLE IF NOT EXISTS members (
+    id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    code     TEXT UNIQUE,
+    name     TEXT NOT NULL,
+    phone    TEXT,
+    created  TEXT
+  )
+`).run();
+
+
 // Tabel penampung satuan & harga per produk
 db.prepare(`
   CREATE TABLE IF NOT EXISTS product_units (
