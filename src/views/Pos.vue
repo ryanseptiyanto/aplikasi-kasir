@@ -16,7 +16,7 @@
       <!-- POS Content -->
       <div class="page-wrapper">
         <div class="container-xl mt-4">
-          <!-- Langkah 1: Top Bar Tambah Tanggal, Member, Scan & Total -->
+          <!-- Langkah 1: Top Bar (Tanggal, Member, Scan & Total) -->
           <div class="row align-items-end g-3 mb-3">
             <div class="col-md-8">
               <div class="row g-2">
@@ -139,16 +139,16 @@
             </div>
           </div>
         </div>
-        
+
         <!-- Footer untuk Tombol -->
         <footer class="footer bg-white border-top py-3">
-        <div class="container-xl d-flex justify-content-end">
+            <div class="container-xl d-flex justify-content-end">
             <button class="btn btn-secondary me-2" @click="clearCart()">Clear</button>
             <button class="btn btn-success" @click="openPaymentModal()" :disabled="cart.length===0">Bayar</button>
-        </div>
+            </div>
         </footer>
-        </div>
-        
+
+      </div>
     </div>
   </template>
   
@@ -168,17 +168,17 @@
       const scanInput = ref('')
       const cart = reactive([])
       const payment = ref(0)
-      let paymentModal = null
+      const paymentModalEl = ref(null)
+      const paymentModal = ref(null)
   
       onMounted(async () => {
-        // load products + units
         const list = await window.api.fetchProducts()
         for (const p of list) {
           p.units = await window.api.fetchUnits(p.id)
         }
         products.value = list
-        // init payment modal
-        paymentModal = new Modal(paymentModalEl)
+        // Initialize modal using the actual DOM element
+        paymentModal.value = new Modal(paymentModalEl.value)
       })
   
       const getUnits = (pid) => {
@@ -255,7 +255,7 @@
       const canPay = computed(() => cart.length > 0 && payment.value >= total.value)
   
       const openPaymentModal = () => {
-        paymentModal.show()
+        paymentModal.value.show()
       }
   
       const confirmCheckout = async () => {
@@ -272,7 +272,7 @@
         }
         const res = await window.api.createTransaction(payload)
         Swal.fire('Sukses', `Faktur: ${res.faktur}\nKembalian: ${formatCurrency(res.kembalian)}`, 'success')
-        paymentModal.hide()
+        paymentModal.value.hide()
         clearCart()
       }
   
@@ -303,7 +303,7 @@
         formatCurrency,
         logout,
         getUnits,
-        paymentModalEl: ref(null)
+        paymentModalEl
       }
     }
   }
