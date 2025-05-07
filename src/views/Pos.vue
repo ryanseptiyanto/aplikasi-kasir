@@ -14,18 +14,42 @@
       </header>
   
       <!-- POS Content -->
-      <div class="page-wrapper">
+      <!-- Bagian Atas: Tanggal, Member, Scan Produk & Total -->
+        <div class="page-wrapper">
         <div class="container-xl mt-4">
-          <!-- Input Produk -->
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <label class="form-label">Scan atau pilih produk</label>
-              <div class="input-group">
-                <input v-model="scanInput" @keyup.enter="addByScan" type="text" class="form-control" placeholder="Masukkan barcode atau nama" />
-                <button class="btn btn-outline-secondary" @click="addByScan">Tambah</button>
-              </div>
+            <div class="row align-items-end g-3 mb-3">
+            <!-- Kolom Kiri: Tanggal & Member & Scan -->
+            <div class="col-md-8">
+                <div class="row g-2">
+                <div class="col-sm-4">
+                    <label class="form-label">Tanggal</label>
+                    <input type="text" class="form-control" :value="today" readonly />
+                </div>
+                <div class="col-sm-4">
+                    <label class="form-label">Member</label>
+                    <input v-model="member" type="text" class="form-control" placeholder="Masukkan kode/member" />
+                </div>
+                <div class="col-sm-4">
+                    <label class="form-label">Scan / Cari Produk</label>
+                    <div class="input-group">
+                    <input
+                        v-model="scanInput"
+                        @keyup.enter="addByScan"
+                        type="text"
+                        class="form-control"
+                        placeholder="Barcode atau nama"
+                    />
+                    <button class="btn btn-outline-secondary" @click="addByScan">Tambah</button>
+                    </div>
+                </div>
+                </div>
             </div>
-          </div>
+            <!-- Kolom Kanan: Total Harga -->
+            <div class="col-md-4 text-end">
+                <label class="form-label">Total</label>
+                <div class="h2">{{ formatCurrency(total) }}</div>
+            </div>
+            </div>
   
           <!-- Tabel Keranjang -->
           <div class="card mb-3">
@@ -106,6 +130,8 @@
       const cart = reactive([]);
       const scanInput = ref('');
       const payment = ref(0);
+      const today = new Date().toLocaleDateString('id-ID');
+      const member = ref('');
   
       const loadProducts = async () => {
         const list = await window.api.fetchProducts();
@@ -190,7 +216,7 @@
   
       onMounted(loadProducts);
   
-      return { scanInput, cart, payment, total, change, canPay, addByScan, updateItem, removeItem, checkout, formatCurrency, logout };
+      return { scanInput, cart, payment, total, change, canPay, addByScan, updateItem, removeItem, checkout, formatCurrency, today, member, logout };
     }
   };
   </script>
