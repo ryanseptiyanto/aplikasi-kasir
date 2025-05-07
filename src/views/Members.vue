@@ -69,14 +69,12 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-              <div class="mb-3">
-                <label class="form-label">Kode Member</label>
-                <input v-model="form.code" type="text" class="form-control" :readonly="form.id" required />
-              </div>
+              <!-- Nama -->
               <div class="mb-3">
                 <label class="form-label">Nama</label>
                 <input v-model="form.name" type="text" class="form-control" required />
               </div>
+              <!-- Telepon -->
               <div class="mb-3">
                 <label class="form-label">Telepon</label>
                 <input v-model="form.phone" type="text" class="form-control" />
@@ -130,23 +128,26 @@ export default {
       });
     },
     async saveMember() {
+      // generate code otomatis: sequence incremental (0001, 0002, ...)
+      const nextSeq = this.members.length + 1;
+      const code = String(nextSeq).padStart(4, '0');
+
+      const now = new Date(
+        new Date().toLocaleString('en-US', { timeZone: 'Asia/Jakarta' })
+      );
+
       const memberData = {
         id: this.form.id,
-        code: this.form.code,
+        code: this.form.id ? this.form.code : code,
         name: this.form.name,
         phone: this.form.phone,
-        created: this.form.created
+        created: this.form.id ? this.form.created : now.toISOString().slice(0,19).replace('T',' ')
       };
+
       if (this.form.id) {
         await window.api.updateMember(memberData);
         Swal.fire('Berhasil', 'Member diperbarui', 'success');
       } else {
-        memberData.created = new Date(
-          new Date().toLocaleString('en-US', { timeZone: 'Asia/Jakarta' })
-        )
-          .toISOString()
-          .slice(0, 19)
-          .replace('T', ' ');
         await window.api.createMember(memberData);
         Swal.fire('Berhasil', 'Member baru ditambahkan', 'success');
       }
