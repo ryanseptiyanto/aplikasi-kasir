@@ -30,6 +30,8 @@ contextBridge.exposeInMainWorld('api', {
 
     // Settings
     backupDB:   () => ipcRenderer.invoke('backup-database'),
-    restoreDB:  () => ipcRenderer.invoke('restore-database')
+    restoreDB:  () => ipcRenderer.invoke('restore-database'),
+    fetchSettings: () => ipcRenderer.invoke('fetch-settings'),
+    updateSetting: (key, value) => ipcRenderer.invoke('update-setting', { key, value })
 
 });
