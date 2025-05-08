@@ -14,7 +14,7 @@ function registerSettingsHandler() {
       defaultPath: `kasir-backup-${new Date().toISOString().slice(0,10)}.db`,
       filters: [{ name: 'SQLite DB', extensions: ['db'] }]
     });
-    if (canceled || !filePath) throw new Error('Backup dibatalkan');
+    if (canceled || !filePath) return null;
     // Copy file
     fs.copyFileSync(dbPath, filePath);
     return filePath;
@@ -28,7 +28,7 @@ function registerSettingsHandler() {
       properties: ['openFile'],
       filters: [{ name: 'SQLite DB', extensions: ['db'] }]
     });
-    if (canceled || filePaths.length === 0) throw new Error('Restore dibatalkan');
+    if (canceled || filePaths.length === 0) return null;
     // Copy file
     fs.copyFileSync(filePaths[0], dbPath);
     return filePaths[0];

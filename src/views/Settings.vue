@@ -43,24 +43,29 @@
   export default {
     name: 'Settings',
     methods: {
-      async backupDatabase() {
-        try {
-          await window.api.backupDB()
+      backupDatabase() {
+        window.api.backupDB()
+        .then(result => {
+        if (!result) return; // user cancel
           Swal.fire('Sukses', 'Database berhasil dibackup', 'success')
-        } catch (err) {
+        })
+        .catch(err => {
           Swal.fire('Gagal', 'Backup database gagal: ' + err.message, 'error')
-        }
+        })
       },
-      async restoreDatabase() {
-        try {
-          await window.api.restoreDB()
-          Swal.fire('Sukses', 'Database berhasil direstore', 'success')
-          // Setelah restore, reload aplikasi
-          location.reload()
-        } catch (err) {
-          Swal.fire('Gagal', 'Restore database gagal: ' + err.message, 'error')
-        }
-      },
+      restoreDatabase() {
+        window.api.restoreDB()
+          .then(result => {
+            if (!result) return;
+            Swal.fire('Sukses', 'Database berhasil direstore', 'success')
+            .then(() => {
+              location.reload();
+            });
+          })
+          .catch(err => {
+            Swal.fire('Gagal', 'Restore database gagal: ' + err.message, 'error');
+          });
+        },
       logout() {
         localStorage.removeItem('user')
         this.$router.push('/login')
