@@ -16,7 +16,7 @@ contextBridge.exposeInMainWorld('api', {
     createTransaction: (payload) => ipcRenderer.invoke('create-transaction', payload),
     fetchTransactions: () => ipcRenderer.invoke('fetch-transactions'),
     getTransactionDetail: (faktur) => ipcRenderer.invoke('get-transaction-detail', faktur),
-    printReceipt: (faktur) => ipcRenderer.invoke('print-receipt', faktur),
+    printReceipt: (faktur, bayar) => ipcRenderer.invoke('print-receipt', faktur, bayar),
 
     // Members
     fetchMembers: () => ipcRenderer.invoke('fetch-members'),

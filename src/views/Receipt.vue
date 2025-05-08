@@ -41,8 +41,8 @@
     <!-- Summary -->
     <div class="mt-3">
       <div><strong>Total:</strong> {{ formatCurrency(header.total) }}</div>
-      <div><strong>Bayar:</strong> {{ formatCurrency(header.bayar) }}</div>
-      <div><strong>Kembali:</strong> {{ formatCurrency(header.bayar - header.total) }}</div>
+      <div><strong>Bayar:</strong> {{ formatCurrency(bayar) }}</div>
+      <div><strong>Kembali:</strong> {{ formatCurrency(bayar - header.total) }}</div>
     </div>
 
     <!-- Footer -->
@@ -59,36 +59,43 @@ export default {
   setup() {
     const route = useRoute();
     const faktur = route.params.faktur;
-    const { bayar = 0 } = route.query;
+    const bayar = ref(Number(route.query.bayar) || 0);
 
     const detail = ref([]);
-    const header = ref({ tanggal: '', total: 0, kasir: '', bayar: Number(bayar) });
+    const header = ref({ tanggal: '', total: 0, kasir: '' });
     const storeInfo = ref({ store_name: '', store_address: '', store_phone: '' });
 
     onMounted(async () => {
       // Load store settings
       const settings = await window.api.fetchSettings();
-      storeInfo.value.store_name = settings.store_name || '';
-      storeInfo.value.store_address = settings.store_address || '';
-      storeInfo.value.store_phone = settings.store_phone || '';
+      storeInfo.value = {
+        store_name: settings.store_name || '',
+        store_address: settings.store_address || '',
+        store_phone: settings.store_phone || ''
+      };
 
       // Load transaction detail and header
       detail.value = await window.api.getTransactionDetail(faktur);
       const all = await window.api.fetchTransactions();
       const h = all.find(t => t.faktur === faktur) || {};
       header.value = {
-        tanggal: h.tanggal,
-        total: h.total,
-        kasir: h.kasir,
-        bayar: Number(bayar)
+        tanggal: h.tanggal || '',
+        total: h.total || 0,
+        kasir: h.kasir || ''
       };
+
       window.print();
     });
 
     const formatCurrency = v =>
-      new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(v);
+      new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+      }).format(v);
 
-    return { storeInfo, faktur, detail, header, formatCurrency };
+    return { storeInfo, faktur, detail, header, bayar, formatCurrency };
   }
 };
 </script>

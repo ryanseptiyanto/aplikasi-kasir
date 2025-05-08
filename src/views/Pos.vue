@@ -279,7 +279,7 @@ export default {
         bayar: payment.value
       }
       const res = await window.api.createTransaction(payload)
-      await window.api.printReceipt(res.faktur)
+      await window.api.printReceipt(res.faktur, res.bayar)
       Swal.fire('Sukses', `No. Transaksi: ${res.faktur}\nKembalian: ${formatCurrency(res.kembalian)}`, 'success')
       paymentModal.value.hide()
       clearCart()

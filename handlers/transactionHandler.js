@@ -4,52 +4,42 @@ const db = require('../backend/db');
 const path = require('path');
 
 function registerTransactionHandler() {
-  // Create Transaction (header + details)
+  // Handler untuk bikin transaksi (header + detail)
   ipcMain.handle('create-transaction', (event, { kasir_id, items, bayar }) => {
-    // Use Jakarta timezone (GMT+7)
     const nowJkt = new Date(
       new Date().toLocaleString('en-US', { timeZone: 'Asia/Jakarta' })
     );
-
-    // Generate faktur: YYMMDD + 5-digit sequence per day
+    // Generate nomor transaksi (YYMMDD + 5-digit sequence)
     const yy = String(nowJkt.getFullYear() % 100).padStart(2, '0');
     const mm = String(nowJkt.getMonth() + 1).padStart(2, '0');
     const dd = String(nowJkt.getDate()).padStart(2, '0');
-    const prefix = `${yy}${mm}${dd}`;  // e.g. '250507'
-
-    // Count existing transactions for today
+    const prefix = `${yy}${mm}${dd}`;
     const { cnt } = db.prepare(
       'SELECT COUNT(*) AS cnt FROM transaksi WHERE faktur LIKE ?'
     ).get(`${prefix}%`);
-    const seq = cnt + 1;
-    const seqStr = String(seq).padStart(5, '0');   // '00001'
-    const faktur = prefix + seqStr;                // '25050700001'
-
-    // Format tanggal in Jakarta timezone: YYYY-MM-DD HH:MM:SS
+    const seq = String(cnt + 1).padStart(5, '0');
+    const faktur = prefix + seq;
+    // Format tanggal Jakarta
     const hh = String(nowJkt.getHours()).padStart(2, '0');
     const mi = String(nowJkt.getMinutes()).padStart(2, '0');
     const ss = String(nowJkt.getSeconds()).padStart(2, '0');
     const tanggal = `${nowJkt.getFullYear()}-${mm}-${dd} ${hh}:${mi}:${ss}`;
 
     const total = items.reduce((sum, i) => sum + i.subtotal, 0);
-
-    // Simpan header transaksi
+    // Simpan header
     const info = db.prepare(
-      `INSERT INTO transaksi (faktur, tanggal, total, kasir_id)
-       VALUES (?, ?, ?, ?)`
+      `INSERT INTO transaksi (faktur, tanggal, total, kasir_id) VALUES (?, ?, ?, ?)`
     ).run(faktur, tanggal, total, kasir_id);
-    const tx_id = info.lastInsertRowid;
-
-    // Simpan detail transaksi
+    const txId = info.lastInsertRowid;
+    // Simpan detail
     const insertDetail = db.prepare(
-      `INSERT INTO transaksi_detail
-         (transaksi_id, product_id, unit_id, qty, price, subtotal)
+      `INSERT INTO transaksi_detail (transaksi_id, product_id, unit_id, qty, price, subtotal)
        VALUES (?, ?, ?, ?, ?, ?)`
     );
-    const insertMany = db.transaction((arr) => {
-      for (const it of arr) {
-        insertDetail.run(tx_id, it.product_id, it.unit_id, it.qty, it.price, it.subtotal);
-      }
+    const insertMany = db.transaction(arr => {
+      arr.forEach(it => {
+        insertDetail.run(txId, it.product_id, it.unit_id, it.qty, it.price, it.subtotal);
+      });
     });
     insertMany(items);
 
@@ -80,23 +70,24 @@ function registerTransactionHandler() {
   });
 
   // Print Receipt (Development Mode)
-  ipcMain.handle('print-receipt', async (event, faktur) => {
+  ipcMain.handle('print-receipt', async (event, faktur, bayar) => {
     const isDev = !app.isPackaged;
     const win = new BrowserWindow({
       width: 400,
       height: 600,
-      show: true,
+      show: isDev,
       webPreferences: {
         preload: path.join(__dirname, '..', 'preload.js'),
         contextIsolation: true
       }
-    });
+    })
 
     // Load the receipt URL
+    const urlHash = `/receipt/${faktur}?bayar=${bayar}`;
     if (isDev) {
-      await win.loadURL(`http://localhost:5173/#/receipt/${faktur}`);
+      await win.loadURL(`http://localhost:5173/#${urlHash}`);
     } else {
-      await win.loadFile(path.join(__dirname, '..', 'dist/index.html'), { hash: `/receipt/${faktur}` });
+      await win.loadFile(path.join(__dirname, '..', 'dist/index.html'), { hash: urlHash });
     }
 
     // Once loaded, trigger print dialog
