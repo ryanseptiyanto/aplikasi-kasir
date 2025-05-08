@@ -29,7 +29,11 @@
               <label class="form-label">Sampai</label>
               <input type="date" v-model="dateTo" class="form-control" />
             </div>
-            <div class="col-md-6 d-flex align-items-end justify-content-end">
+            <div class="col-md-4">
+              <label class="form-label">Cari</label>
+              <input type="text" v-model="searchQuery" class="form-control" placeholder="Cari transaksi..." />
+            </div>
+            <div class="col-md-2 d-flex align-items-end justify-content-end">
               <button class="btn btn-secondary me-2" @click="clearFilter">Reset Filter</button>
             </div>
           </div>
@@ -119,6 +123,7 @@
       const detail = ref([]);
       const dateFrom = ref('');
       const dateTo = ref('');
+      const searchQuery = ref('');
       const detailModalEl = ref(null);
       let detailModal = null;
   
@@ -132,7 +137,8 @@
           const date = t.tanggal.slice(0, 10); // YYYY-MM-DD
           const afterFrom = dateFrom.value ? date >= dateFrom.value : true;
           const beforeTo = dateTo.value ? date <= dateTo.value : true;
-          return afterFrom && beforeTo;
+          const matchesQuery = searchQuery.value ? t.faktur.includes(searchQuery.value) : true;
+          return afterFrom && beforeTo && matchesQuery;
         });
       });
   
@@ -144,6 +150,7 @@
       const clearFilter = () => {
         dateFrom.value = '';
         dateTo.value = '';
+        searchQuery.value = '';
       };
   
       const formatCurrency = (v) =>
@@ -157,7 +164,7 @@
         window.location.href = '#/login';
       };
   
-      return { transactions, detail, dateFrom, dateTo, displayedTransactions, showDetail, clearFilter, formatCurrency, formatDate, detailModalEl, logout };
+      return { transactions, detail, dateFrom, dateTo, searchQuery, displayedTransactions, showDetail, clearFilter, formatCurrency, formatDate, detailModalEl, logout };
     }
   };
   </script>
@@ -165,4 +172,3 @@
   <style scoped>
   .page-wrapper { background: #f1f3f5; min-height: calc(100vh - 56px); }
   </style>
-  
