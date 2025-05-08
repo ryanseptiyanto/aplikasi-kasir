@@ -18,6 +18,20 @@ function registerReportHandler() {
     `);
     return stmt.all(from, to);
   });
+
+  // Product report: produk terlaris berdasarkan total qty terjual
+  ipcMain.handle('fetch-product-report', () => {
+    return db.prepare(`
+      SELECT
+        td.product_id,
+        p.name,
+        SUM(td.qty) AS total_qty
+      FROM transaksi_detail td
+      JOIN products p ON p.id = td.product_id
+      GROUP BY td.product_id
+      ORDER BY total_qty DESC
+    `).all();
+  });
 }
 
 module.exports = { registerReportHandler };
