@@ -33,6 +33,26 @@ function registerSettingsHandler() {
     fs.copyFileSync(filePaths[0], dbPath);
     return filePaths[0];
   });
+
+  // Fetch all settings as key-value pairs
+  ipcMain.handle('fetch-settings', () => {
+    const rows = db.prepare('SELECT key, value FROM settings').all();
+    return rows.reduce((obj, { key, value }) => {
+      obj[key] = value;
+      return obj;
+    }, {});
+  });
+
+  // Update or insert a setting
+  ipcMain.handle('update-setting', (event, { key, value }) => {
+    const exists = db.prepare('SELECT 1 FROM settings WHERE key = ?').get(key);
+    if (exists) {
+      db.prepare('UPDATE settings SET value = ? WHERE key = ?').run(value, key);
+    } else {
+      db.prepare('INSERT INTO settings (key, value) VALUES (?, ?)').run(key, value);
+    }
+    return { key, value };
+  });
 }
 
 module.exports = { registerSettingsHandler }
