@@ -1,5 +1,5 @@
-// handlers/settingsHandler.js
 const { ipcMain, dialog, app } = require('electron');
+const db = require('../backend/db');
 const fs = require('fs');
 const path = require('path');
 

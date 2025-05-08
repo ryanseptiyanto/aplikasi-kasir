@@ -10,6 +10,7 @@ import Transactions from './views/Transactions.vue'
 import SalesReport   from './views/SalesReport.vue'
 import ProductReport from './views/ProductReport.vue'
 import Settings      from './views/Settings.vue'
+import StoreSettings from './views/StoreSettings.vue'
 
 const routes = [
   { path: '/',         redirect: '/login' },
@@ -22,7 +23,8 @@ const routes = [
   { path: '/transactions',   component: Transactions },
   { path: '/report/sales',   component: SalesReport },
   { path: '/report/products',component: ProductReport },
-  { path: '/settings',       component: Settings }
+  { path: '/settings',       component: Settings },
+  { path: '/settings/store', component: StoreSettings },
 ]
 
 const router = createRouter({

@@ -32,6 +32,12 @@
               </button>
             </div>
           </div>
+          <h2>Pengaturan Toko</h2>
+          <div class="d-flex justify-content-start">
+            <button class="btn btn-primary" @click="$router.push('/settings/store')">
+              Pengaturan Toko
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -77,4 +83,3 @@
   <style scoped>
   .page-wrapper { background: #f1f3f5; min-height: calc(100vh - 56px); }
   </style>
-  
