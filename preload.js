@@ -27,4 +27,9 @@ contextBridge.exposeInMainWorld('api', {
     // Reports
     fetchSalesReport: ({ from, to }) => ipcRenderer.invoke('fetch-sales-report', { from, to }),
     fetchProductReport: () => ipcRenderer.invoke('fetch-product-report'),
+
+    // Settings
+    backupDB:   () => ipcRenderer.invoke('backup-database'),
+    restoreDB:  () => ipcRenderer.invoke('restore-database')
+
 });
