@@ -19,6 +19,21 @@
       <div class="page-wrapper">
         <div class="container-xl mt-4">
           <h2>Riwayat Transaksi</h2>
+          <!-- Filter Tanggal -->
+          <div class="row mb-3">
+            <div class="col-md-3">
+              <label class="form-label">Dari</label>
+              <input type="date" v-model="dateFrom" class="form-control" />
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Sampai</label>
+              <input type="date" v-model="dateTo" class="form-control" />
+            </div>
+            <div class="col-md-6 d-flex align-items-end justify-content-end">
+              <button class="btn btn-secondary me-2" @click="clearFilter">Reset Filter</button>
+            </div>
+          </div>
+  
           <div class="card">
             <div class="card-body">
               <table class="table table-hover">
@@ -33,7 +48,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(t, i) in transactions" :key="t.id">
+                  <tr v-for="(t, i) in displayedTransactions" :key="t.id">
                     <td>{{ i + 1 }}</td>
                     <td>{{ t.faktur }}</td>
                     <td>{{ formatDate(t.tanggal) }}</td>
@@ -45,8 +60,8 @@
                       </button>
                     </td>
                   </tr>
-                  <tr v-if="transactions.length === 0">
-                    <td colspan="6" class="text-center">Belum ada transaksi</td>
+                  <tr v-if="displayedTransactions.length === 0">
+                    <td colspan="6" class="text-center">Tidak ada transaksi</td>
                   </tr>
                 </tbody>
               </table>
@@ -94,7 +109,7 @@
   </template>
   
   <script>
-  import { ref, onMounted } from 'vue';
+  import { ref, onMounted, computed } from 'vue';
   import { Modal } from 'bootstrap';
   
   export default {
@@ -102,6 +117,8 @@
     setup() {
       const transactions = ref([]);
       const detail = ref([]);
+      const dateFrom = ref('');
+      const dateTo = ref('');
       const detailModalEl = ref(null);
       let detailModal = null;
   
@@ -110,9 +127,23 @@
         detailModal = new Modal(detailModalEl.value);
       });
   
+      const displayedTransactions = computed(() => {
+        return transactions.value.filter(t => {
+          const date = t.tanggal.slice(0, 10); // YYYY-MM-DD
+          const afterFrom = dateFrom.value ? date >= dateFrom.value : true;
+          const beforeTo = dateTo.value ? date <= dateTo.value : true;
+          return afterFrom && beforeTo;
+        });
+      });
+  
       const showDetail = async (faktur) => {
         detail.value = await window.api.getTransactionDetail(faktur);
         detailModal.show();
+      };
+  
+      const clearFilter = () => {
+        dateFrom.value = '';
+        dateTo.value = '';
       };
   
       const formatCurrency = (v) =>
@@ -126,7 +157,7 @@
         window.location.href = '#/login';
       };
   
-      return { transactions, detail, showDetail, formatCurrency, formatDate, detailModalEl, logout };
+      return { transactions, detail, dateFrom, dateTo, displayedTransactions, showDetail, clearFilter, formatCurrency, formatDate, detailModalEl, logout };
     }
   };
   </script>

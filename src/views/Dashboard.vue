@@ -8,6 +8,7 @@
             <router-link to="/products" class="nav-link">Produk</router-link>
             <router-link to="/pos" class="nav-link">Kasir</router-link>
             <router-link to="/members" class="nav-link">Member</router-link>
+            <router-link to="/transactions" class="nav-link">Transaksi</router-link>
             <span class="nav-link">Halo, {{ user.username }}</span>
             <button class="btn btn-outline-danger btn-sm" @click="logout">Logout</button>
           </div>
