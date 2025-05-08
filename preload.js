@@ -25,5 +25,6 @@ contextBridge.exposeInMainWorld('api', {
     deleteMember: (id) => ipcRenderer.invoke('delete-member', id),
 
     // Reports
-    fetchSalesReport: ({ from, to }) => ipcRenderer.invoke('fetch-sales-report', { from, to })
+    fetchSalesReport: ({ from, to }) => ipcRenderer.invoke('fetch-sales-report', { from, to }),
+    fetchProductReport: () => ipcRenderer.invoke('fetch-product-report'),
 });
