@@ -13,12 +13,11 @@
       <div><strong>Tanggal:</strong> {{ header.tanggal }}</div>
       <div><strong>Kasir:</strong> {{ header.kasir }}</div>
     </div>
-
+    
     <!-- Item Details -->
     <table class="table table-borderless">
       <thead>
         <tr>
-          <th>#</th>
           <th>Nama</th>
           <th>Unit</th>
           <th class="text-end">Qty</th>
@@ -28,7 +27,6 @@
       </thead>
       <tbody>
         <tr v-for="(item, i) in detail" :key="i">
-          <td>{{ i + 1 }}</td>
           <td>{{ item.name }}</td>
           <td>{{ item.unit_name }}</td>
           <td class="text-end">{{ item.qty }}</td>
