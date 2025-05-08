@@ -37,11 +37,15 @@
             </div>
           </div>
         </div>
+        <SalesChart :data="salesData" />
       </div>
     </div>
   </template>
   
   <script>
+  import SalesChart from '@/views/SalesChart.vue'
+  import { ref, onMounted } from 'vue'
+
   export default {
     data() {
       return {
@@ -65,6 +69,19 @@
     },
     mounted() {
       this.fetchStats()
+    },
+    components: { SalesChart },
+    setup() {
+      const salesData = ref([])
+
+      onMounted(async () => {
+        const today = new Date().toISOString().slice(0,10)
+        // fetch last 7 days report as contoh
+        const from = new Date(new Date().setDate(new Date().getDate()-6)).toISOString().slice(0,10)
+        salesData.value = await window.api.fetchSalesReport({ from, to: today })
+      })
+
+      return { salesData }
     }
   }
   </script>
