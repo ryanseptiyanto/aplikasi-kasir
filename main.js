@@ -2,11 +2,12 @@ const { app, BrowserWindow } = require('electron');
 const path = require('path');
 const isDev = !app.isPackaged;
 
-const { registerAuthHandler }      = require('./handlers/authHandler');
-const { registerDashboardHandler } = require('./handlers/dashboardHandler');
-const { registerProductHandler }   = require('./handlers/productHandler');
-const { registerTransactionHandler } = require('./handlers/transactionHandler');
-const { registerMemberHandler }    = require('./handlers/memberHandler');
+const { registerAuthHandler }         = require('./handlers/authHandler');
+const { registerDashboardHandler }    = require('./handlers/dashboardHandler');
+const { registerProductHandler }      = require('./handlers/productHandler');
+const { registerTransactionHandler }  = require('./handlers/transactionHandler');
+const { registerMemberHandler }       = require('./handlers/memberHandler');
+const { registerReportHandler }       = require('./handlers/reportHandler');
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -32,4 +33,5 @@ app.whenReady().then(() => {
   registerProductHandler();
   registerTransactionHandler();
   registerMemberHandler();
+  registerReportHandler();
 });
