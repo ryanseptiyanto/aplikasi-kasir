@@ -2,9 +2,9 @@
   <div class="receipt p-4" id="receipt">
     <!-- Store Information -->
     <div class="text-center mb-3">
-      <h3>{{ storeInfo.name }}</h3>
-      <div>{{ storeInfo.address }}</div>
-      <div>Tel: {{ storeInfo.phone }}</div>
+      <h3>{{ storeInfo.store_name }}</h3>
+      <div>{{ storeInfo.store_address }}</div>
+      <div>Tel: {{ storeInfo.store_phone }}</div>
     </div>
 
     <!-- Transaction Header -->
@@ -13,11 +13,12 @@
       <div><strong>Tanggal:</strong> {{ header.tanggal }}</div>
       <div><strong>Kasir:</strong> {{ header.kasir }}</div>
     </div>
-    
+
     <!-- Item Details -->
     <table class="table table-borderless">
       <thead>
         <tr>
+          <th>#</th>
           <th>Nama</th>
           <th>Unit</th>
           <th class="text-end">Qty</th>
@@ -27,6 +28,7 @@
       </thead>
       <tbody>
         <tr v-for="(item, i) in detail" :key="i">
+          <td>{{ i + 1 }}</td>
           <td>{{ item.name }}</td>
           <td>{{ item.unit_name }}</td>
           <td class="text-end">{{ item.qty }}</td>
@@ -57,19 +59,20 @@ export default {
   setup() {
     const route = useRoute();
     const faktur = route.params.faktur;
-    const { bayar = 0, kembali = 0 } = route.query;
+    const { bayar = 0 } = route.query;
 
     const detail = ref([]);
     const header = ref({ tanggal: '', total: 0, kasir: '', bayar: Number(bayar) });
-
-    // Store info (can be loaded/edited later)
-    const storeInfo = ref({
-      name: 'Nama Toko',
-      address: 'Alamat Toko',
-      phone: '081234567890'
-    });
+    const storeInfo = ref({ store_name: '', store_address: '', store_phone: '' });
 
     onMounted(async () => {
+      // Load store settings
+      const settings = await window.api.fetchSettings();
+      storeInfo.value.store_name = settings.store_name || '';
+      storeInfo.value.store_address = settings.store_address || '';
+      storeInfo.value.store_phone = settings.store_phone || '';
+
+      // Load transaction detail and header
       detail.value = await window.api.getTransactionDetail(faktur);
       const all = await window.api.fetchTransactions();
       const h = all.find(t => t.faktur === faktur) || {};
