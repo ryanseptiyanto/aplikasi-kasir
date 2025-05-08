@@ -6,6 +6,7 @@ import Products from './views/Products.vue'
 import Pos from './views/Pos.vue'
 import Receipt from './views/Receipt.vue'
 import Members from './views/Members.vue'
+import Transactions from './views/Transactions.vue'
 
 const routes = [
   { path: '/',         redirect: '/login' },
@@ -15,6 +16,7 @@ const routes = [
   { path: '/pos',      component: Pos },
   { path: '/receipt/:faktur', component: Receipt },
   { path: '/members',  component: Members },
+  { path: '/transactions',   component: Transactions }
 ]
 
 const router = createRouter({
