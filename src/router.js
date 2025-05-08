@@ -9,6 +9,7 @@ import Members from './views/Members.vue'
 import Transactions from './views/Transactions.vue'
 import SalesReport   from './views/SalesReport.vue'
 import ProductReport from './views/ProductReport.vue'
+import Settings      from './views/Settings.vue'
 
 const routes = [
   { path: '/',         redirect: '/login' },
@@ -20,7 +21,8 @@ const routes = [
   { path: '/members',  component: Members },
   { path: '/transactions',   component: Transactions },
   { path: '/report/sales',   component: SalesReport },
-  { path: '/report/products',component: ProductReport }
+  { path: '/report/products',component: ProductReport },
+  { path: '/settings',       component: Settings }
 ]
 
 const router = createRouter({
