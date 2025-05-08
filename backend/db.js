@@ -1,6 +1,7 @@
 // ─ backend/db.js
 const Database = require('better-sqlite3');
 const db = new Database('database/kasir.db');
+// db.pragma('foreign_keys = ON')
 
 // ── Tabel Users ──
 db.prepare(`
