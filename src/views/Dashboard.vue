@@ -19,6 +19,15 @@
       <!-- Konten Dashboard -->
       <div class="page-wrapper">
         <div class="container-xl mt-4">
+          <h2>Dashboard</h2>
+          <!-- Sales Chart -->
+          <div class="card mb-4">
+            <div class="col-md-6">
+              <div class="card-body">
+              <SalesChart :data="salesData" />
+              </div>
+            </div>
+          </div>
           <div class="row row-deck row-cards">
             <div class="col-sm-4" v-for="stat in stats" :key="stat.label">
               <div class="card">
@@ -37,7 +46,6 @@
             </div>
           </div>
         </div>
-        <SalesChart :data="salesData" />
       </div>
     </div>
   </template>
@@ -47,6 +55,7 @@
   import { ref, onMounted } from 'vue'
 
   export default {
+    name: 'Dashboard',
     data() {
       return {
         user: JSON.parse(localStorage.getItem('user') || '{}'),

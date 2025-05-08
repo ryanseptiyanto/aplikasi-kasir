@@ -1,7 +1,10 @@
 <template>
-  <div class="chart-container" style="height: 200px; width: 400px;">
-    <bar-chart :chart-data="chartData" :chart-options="chartOptions" />
-  </div>
+  <bar-chart
+    :chart-data="chartData"
+    :chart-options="chartOptions"
+    :height="200"
+    :width="400"
+  />
 </template>
   
 <script>
@@ -61,11 +64,3 @@ export default defineComponent({
   }
 })
 </script>
-  
-<style scoped>
-.chart-container {
-  position: relative;
-  max-width: 100%; /* Agar responsif */
-  height: 200px; /* Tinggi chart */
-}
-</style>
