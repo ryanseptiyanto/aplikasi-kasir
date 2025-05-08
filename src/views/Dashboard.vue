@@ -20,11 +20,26 @@
       <div class="page-wrapper">
         <div class="container-xl mt-4">
           <h2>Dashboard</h2>
-          <!-- Sales Chart -->
-          <div class="card mb-4">
+          <div class="row">
+            <!-- Sales Chart -->
             <div class="col-md-6">
-              <div class="card-body">
-              <SalesChart :data="salesData" />
+              <div class="card mb-4">
+                <div class="card-body">
+                  <SalesChart :data="salesData" />
+                </div>
+              </div>
+            </div>
+  
+            <!-- Card di Sebelah Kanan -->
+            <div class="col-md-6">
+              <div class="card mb-4">
+                <div class="card-body">
+                  <h5 class="card-title">Informasi Tambahan</h5>
+                  <p class="card-text">
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                  </p>
+                  <button class="btn btn-primary">Aksi</button>
+                </div>
               </div>
             </div>
           </div>
@@ -107,4 +122,3 @@
     transform: translateY(-4px);
   }
   </style>
-  
