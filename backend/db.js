@@ -78,4 +78,13 @@ db.prepare(`
   )
 `).run();
 
+// Tabel Settings untuk pengaturan toko
+db.prepare(`
+  CREATE TABLE IF NOT EXISTS settings (
+    key   TEXT PRIMARY KEY,
+    value TEXT NOT NULL
+  )
+`).run();
+
+
 module.exports = db;
