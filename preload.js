@@ -33,6 +33,13 @@ contextBridge.exposeInMainWorld('api', {
     backupDB:   () => ipcRenderer.invoke('backup-database'),
     restoreDB:  () => ipcRenderer.invoke('restore-database'),
     fetchSettings: () => ipcRenderer.invoke('fetch-settings'),
-    updateSetting: (key, value) => ipcRenderer.invoke('update-setting', { key, value })
+    updateSetting: (key, value) => ipcRenderer.invoke('update-setting', { key, value }),
+
+    // Suppliers & Purchase Orders
+    fetchSuppliers:               ()     => ipcRenderer.invoke('fetch-suppliers'),
+    createSupplier:               s      => ipcRenderer.invoke('create-supplier', s),
+    fetchPurchaseOrders:          ()     => ipcRenderer.invoke('fetch-purchase-orders'),
+    createPurchaseOrder:          po     => ipcRenderer.invoke('create-purchase-order', po),
+    fetchPurchaseOrderDetails:    id     => ipcRenderer.invoke('fetch-purchase-order-details', id)
 
 });
