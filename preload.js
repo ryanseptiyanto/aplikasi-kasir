@@ -11,6 +11,7 @@ contextBridge.exposeInMainWorld('api', {
     updateProduct: (p, u) => ipcRenderer.invoke('update-product', { product: p, units: u }),
     deleteProduct: (id) => ipcRenderer.invoke('delete-product', id),
     fetchUnits: (pid) => ipcRenderer.invoke('fetch-units', pid),
+    adjustStock: (product_id, delta) => ipcRenderer.invoke('adjust-stock', { product_id, delta }),
 
     // Transactions
     createTransaction: (payload) => ipcRenderer.invoke('create-transaction', payload),
