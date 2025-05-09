@@ -20,7 +20,7 @@ db.prepare(`
     name TEXT,
     barcode TEXT UNIQUE,
     price REAL,
-    stock INTEGER DEFAULT 0,
+    stock INTEGER NOT NULL DEFAULT 0,
     min_stock INTEGER DEFAULT 0
   )
 `).run();
