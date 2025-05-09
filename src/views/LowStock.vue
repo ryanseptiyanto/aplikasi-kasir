@@ -20,7 +20,10 @@
       <!-- Content -->
       <div class="page-wrapper">
         <div class="container-xl mt-4">
-          <h2>Produk dengan Stok Menipis (≤ {{ threshold }})</h2>
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2>Produk dengan Stok Menipis</h2>
+            <button class="btn btn-success" @click="exportCSV">Export CSV</button>
+          </div>
           <div class="card">
             <div class="card-body">
               <table class="table table-hover">
@@ -92,7 +95,7 @@
     name: 'LowStock',
     setup() {
       const products = ref([]);
-      const threshold = ref(5);
+      const threshold = ref(null);
       const stockModalEl = ref(null);
       let stockModal;
   
@@ -100,16 +103,19 @@
   
       // Load threshold from settings
       const loadThreshold = async () => {
-        const settings = await window.api.fetchSettings();
-        threshold.value = Number(settings.low_stock_threshold) || 5;
+        const allProducts = await window.api.fetchProducts();
+        // Ambil nilai min_stock terkecil dari semua produk
+        const minStockValues = allProducts.map(product => product.min_stock);
+        threshold.value = Math.min(...minStockValues) || 0; // Default ke 0 jika tidak ada produk
       };
   
-      // Load all products and filter low stock
+      // Load all products
       const loadProducts = async () => {
         const all = await window.api.fetchProducts();
         products.value = all;
       };
   
+      // Compute low stock products
       const lowStockProducts = computed(() =>
         products.value.filter(p => p.stock <= threshold.value)
       );
@@ -137,6 +143,29 @@
         await loadProducts();
       };
   
+      // Export low stock to CSV
+      const exportCSV = () => {
+        if (lowStockProducts.value.length === 0) {
+          Swal.fire('Info', 'Tidak ada data untuk diexport', 'info');
+          return;
+        }
+        const header = ['No', 'Nama', 'Barcode', 'Stok'];
+        const rows = lowStockProducts.value.map((p, i) => [
+          i + 1,
+          p.name,
+          p.barcode,
+          p.stock
+        ]);
+        const csvContent = [header, ...rows].map(e => e.join(',')).join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `low_stock_${new Date().toISOString().slice(0,10)}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+      };
+  
       const logout = () => {
         localStorage.removeItem('user');
         window.location.href = '#/login';
@@ -149,6 +178,7 @@
         stockForm,
         openStockModal,
         saveStock,
+        exportCSV,
         logout
       };
     }
@@ -159,4 +189,3 @@
   .page-wrapper { background: #f1f3f5; min-height: calc(100vh - 56px); }
   .table-warning { background-color: #fff3cd; }
   </style>
-  

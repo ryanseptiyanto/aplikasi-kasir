@@ -251,7 +251,7 @@ export default {
       modal: null,
       stockForm: { product_id: null, name: '', delta: 0, type: 'masuk' },
       stockModal: null,
-      threshold: ref(5),
+      threshold: null,
     }
   },
   computed: {
@@ -268,8 +268,10 @@ export default {
     },
     // Load low stock threshold from settings
     async loadThreshold() {
-      const settings = await window.api.fetchSettings();
-      this.threshold.value = Number(settings.low_stock_threshold) || 5;
+      const products = await window.api.fetchProducts();
+      // Ambil nilai min_stock terkecil dari semua produk
+      const minStockValues = products.map(product => product.min_stock);
+      this.threshold.value = Math.min(...minStockValues) || 0; // Default ke 0 jika tidak ada produk
     },
     openModal(product = null) {
       if (product) {
