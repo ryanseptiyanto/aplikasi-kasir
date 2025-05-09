@@ -36,10 +36,16 @@ contextBridge.exposeInMainWorld('api', {
     updateSetting: (key, value) => ipcRenderer.invoke('update-setting', { key, value }),
 
     // Suppliers & Purchase Orders
-    fetchSuppliers:               ()     => ipcRenderer.invoke('fetch-suppliers'),
-    createSupplier:               s      => ipcRenderer.invoke('create-supplier', s),
-    fetchPurchaseOrders:          ()     => ipcRenderer.invoke('fetch-purchase-orders'),
-    createPurchaseOrder:          po     => ipcRenderer.invoke('create-purchase-order', po),
-    fetchPurchaseOrderDetails:    id     => ipcRenderer.invoke('fetch-purchase-order-details', id)
+    fetchSuppliers: () => ipcRenderer.invoke('fetch-suppliers'),
+    createSupplier: s => ipcRenderer.invoke('create-supplier', s),
+    fetchPurchaseOrders: () => ipcRenderer.invoke('fetch-purchase-orders'),
+    createPurchaseOrder: po => ipcRenderer.invoke('create-purchase-order', po),
+    fetchPurchaseOrderDetails: id => ipcRenderer.invoke('fetch-purchase-order-details', id),
+
+    // Retur Penjualan
+    fetchReturns: () => ipcRenderer.invoke('fetch-returns'),
+    createReturn: payload => ipcRenderer.invoke('create-return', payload),
+    fetchReturnDetails: id => ipcRenderer.invoke('fetch-return-details', id)
+
 
 });

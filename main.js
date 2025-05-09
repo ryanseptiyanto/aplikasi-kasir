@@ -10,6 +10,7 @@ const { registerMemberHandler }       = require('./handlers/memberHandler');
 const { registerReportHandler }       = require('./handlers/reportHandler');
 const { registerSettingsHandler }     = require('./handlers/settingsHandler');
 const { registerPurchaseHandler }     = require('./handlers/purchaseHandler');
+const { registerReturnHandler }      = require('./handlers/returnHandler');
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -37,5 +38,6 @@ app.whenReady().then(() => {
   registerMemberHandler();  
   registerReportHandler();
   registerSettingsHandler();  
-  registerPurchaseHandler(); 
+  registerPurchaseHandler();
+  registerReturnHandler(); 
 });
