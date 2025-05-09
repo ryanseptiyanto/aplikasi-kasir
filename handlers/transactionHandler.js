@@ -46,6 +46,16 @@ function registerTransactionHandler() {
     return { faktur, total, bayar, kembalian: bayar - total };
   });
 
+  // Adjust stock in/out for a product
+  ipcMain.handle('adjust-stock', (event, { product_id, delta }) => {
+    // Update stock by delta (+ for incoming, - for outgoing)
+    const update = db.prepare('UPDATE products SET stock = stock + ? WHERE id = ?');
+    update.run(delta, product_id);
+    // Return new stock value
+    const row = db.prepare('SELECT stock FROM products WHERE id = ?').get(product_id);
+    return row ? row.stock : null;
+  });
+
   // Fetch all transactions
   ipcMain.handle('fetch-transactions', () => {
     return db.prepare(
