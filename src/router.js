@@ -11,6 +11,9 @@ import ProductReport  from './views/ProductReport.vue'
 import LowStock       from './views/LowStock.vue'
 import Settings       from './views/Settings.vue'
 import StoreSettings  from './views/StoreSettings.vue'
+import Suppliers          from './views/Suppliers.vue'
+import PurchaseOrder      from './views/PurchaseOrder.vue'
+
 
 const routes = [
   { path: '/',                redirect: '/login' },
@@ -25,7 +28,9 @@ const routes = [
   { path: '/report/products', component: ProductReport },
   { path: '/report/low-stock',component: LowStock },
   { path: '/settings',        component: Settings },
-  { path: '/settings/store',  component: StoreSettings }
+  { path: '/settings/store',  component: StoreSettings },
+  { path: '/suppliers',       component: Suppliers },
+  { path: '/purchase-orders', component: PurchaseOrder }
 ]
 
 const router = createRouter({
