@@ -86,5 +86,39 @@ db.prepare(`
   )
 `).run();
 
+// Create Suppliers table
+db.prepare(`
+  CREATE TABLE IF NOT EXISTS suppliers (
+    id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    name     TEXT    NOT NULL,
+    phone    TEXT,
+    address  TEXT
+  )
+`).run();
+
+// Create Purchase Orders table (header)
+db.prepare(`
+  CREATE TABLE IF NOT EXISTS purchase_orders (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    supplier_id INTEGER NOT NULL,
+    tanggal     TEXT    NOT NULL,
+    total       REAL    NOT NULL,
+    FOREIGN KEY(supplier_id) REFERENCES suppliers(id)
+  )
+`).run();
+
+// Create Purchase Order Details table
+db.prepare(`
+  CREATE TABLE IF NOT EXISTS purchase_order_details (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    order_id    INTEGER NOT NULL,
+    product_id  INTEGER NOT NULL,
+    qty         INTEGER NOT NULL,
+    price       REAL    NOT NULL,
+    subtotal    REAL    NOT NULL,
+    FOREIGN KEY(order_id)   REFERENCES purchase_orders(id),
+    FOREIGN KEY(product_id) REFERENCES products(id)
+  )
+`).run();
 
 module.exports = db;
