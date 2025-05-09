@@ -121,4 +121,34 @@ db.prepare(`
   )
 `).run();
 
+// Returns header table
+db.prepare(`
+  CREATE TABLE IF NOT EXISTS returns (
+    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    return_code     TEXT    UNIQUE NOT NULL,
+    tanggal         TEXT    NOT NULL,
+    transaksi_id    INTEGER NOT NULL,
+    total_refund    REAL    NOT NULL,
+    kasir_id        INTEGER NOT NULL,
+    FOREIGN KEY(transaksi_id) REFERENCES transaksi(id),
+    FOREIGN KEY(kasir_id)      REFERENCES users(id)
+  )
+`).run();
+
+// Returns detail table
+db.prepare(`
+  CREATE TABLE IF NOT EXISTS return_details (
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    return_id     INTEGER NOT NULL,
+    product_id    INTEGER NOT NULL,
+    unit_id       INTEGER NOT NULL,
+    qty           INTEGER NOT NULL,
+    price         REAL    NOT NULL,
+    subtotal      REAL    NOT NULL,
+    FOREIGN KEY(return_id)  REFERENCES returns(id),
+    FOREIGN KEY(product_id) REFERENCES products(id),
+    FOREIGN KEY(unit_id)    REFERENCES units(id)
+  )
+`).run();
+
 module.exports = db;
