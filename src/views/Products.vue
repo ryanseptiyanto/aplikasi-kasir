@@ -65,7 +65,7 @@
 
     <!-- Modal Tambah/Edit -->
     <div class="modal fade" id="productModal" tabindex="-1" ref="modalEl">
-      <div class="modal-dialog modal-lg">
+      <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
           <form @submit.prevent="saveProduct">
             <div class="modal-header">
@@ -250,8 +250,8 @@ export default {
       },
       modal: null,
       stockForm: { product_id: null, name: '', delta: 0, type: 'masuk' },
-      stockModal: null
-
+      stockModal: null,
+      threshold: ref(5),
     }
   },
   computed: {
@@ -266,6 +266,11 @@ export default {
     async loadProducts() {
       this.products = await window.api.fetchProducts()
     },
+    // Load low stock threshold from settings
+    async loadThreshold() {
+      const settings = await window.api.fetchSettings();
+      this.threshold.value = Number(settings.low_stock_threshold) || 5;
+    },
     openModal(product = null) {
       if (product) {
         this.form = {
@@ -276,10 +281,18 @@ export default {
           stock: product.stock,
           min_stock: product.min_stock,
           units: []
-        }
-        window.api.fetchUnits(product.id).then(units => {
-          this.form.units = units
-        })
+        };
+        window.api.fetchUnits(product.id)
+          .then(units => {
+            this.form.units = units || [
+              { unit_name: 'pcs', quantity: 1, price_regular: 0, price_member: 0 }
+            ];
+          })
+          .catch(() => {
+            this.form.units = [
+              { unit_name: 'pcs', quantity: 1, price_regular: 0, price_member: 0 }
+            ];
+          });
       } else {
         this.form = {
           id: null,
@@ -291,12 +304,12 @@ export default {
           units: [
             { unit_name: 'pcs', quantity: 1, price_regular: 0, price_member: 0 }
           ]
-        }
+        };
       }
       this.$nextTick(() => {
-        this.modal = new Modal(this.$refs.modalEl)
-        this.modal.show()
-      })
+        this.modal = new Modal(this.$refs.modalEl);
+        this.modal.show();
+      });
     },
     async saveProduct() {
       const productData = {
@@ -333,20 +346,35 @@ export default {
         confirmButtonText: 'Ya, Hapus'
       }).then(async res => {
         if (res.isConfirmed) {
-          await window.api.deleteProduct(id)
-          Swal.fire('Dihapus', 'Produk telah dihapus', 'success')
-          this.loadProducts()
+          try {
+            await window.api.deleteProduct(id);
+            Swal.fire('Dihapus', 'Produk telah dihapus', 'success');
+            this.loadProducts();
+          } catch (err) {
+            Swal.fire('Gagal', 'Produk gagal dihapus: ' + err.message, 'error');
+          }
         }
-      })
+      });
     },
     addUnitRow() {
-      this.form.units.push({ unit_name: '', quantity: 1, price_regular: 0, price_member: 0 })
+      this.form.units.push({
+        unit_name: '',
+        quantity: 1,
+        price_regular: 0,
+        price_member: 0
+      });
     },
     removeUnitRow(index) {
       this.form.units.splice(index, 1)
     },
     formatCurrency(value) {
-      return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value)
+      if (value == null) return 'Rp 0';
+      return new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+      }).format(value);
     },
     logout() {
       localStorage.removeItem('user')
@@ -364,6 +392,10 @@ export default {
 
     // Simpan penyesuaian stok (masuk atau keluar)
     async saveStock() {
+      if (this.stockForm.delta <= 0) {
+        Swal.fire('Error', 'Jumlah harus lebih besar dari 0', 'error');
+        return;
+      }
       const adjustment = this.stockForm.type === 'keluar' ? -this.stockForm.delta : this.stockForm.delta;
       const updatedStock = await window.api.adjustStock(
         this.stockForm.product_id,
@@ -377,11 +409,13 @@ export default {
 
   },
   mounted() {
-  this.loadProducts()
-  this.productModal = new Modal(this.$refs.modalEl)
-  this.stockModal   = new Modal(this.$refs.stockModalEl)
-}
-
+    this.loadThreshold();
+    this.loadProducts();
+    this.$nextTick(() => {
+      this.productModal = new Modal(this.$refs.modalEl);
+      this.stockModal = new Modal(this.$refs.stockModalEl);
+    });
+  }
 }
 </script>
 
