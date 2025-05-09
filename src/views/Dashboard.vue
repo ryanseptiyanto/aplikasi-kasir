@@ -13,6 +13,8 @@
             <router-link to="/report/products" class="nav-link">Laporan Produk</router-link>
             <router-link to="/report/low-stock" class="nav-link">Laporan Stok Rendah</router-link>
             <router-link to="/settings" class="nav-link">Pengaturan</router-link>
+            <router-link to="/suppliers" class="nav-link">Suppliers</router-link>
+            <router-link to="/purchase-orders" class="nav-link">Pembelian</router-link>
             <span class="nav-link">Halo, {{ user.username }}</span>
             <button class="btn btn-outline-danger btn-sm" @click="logout">Logout</button>
           </div>
