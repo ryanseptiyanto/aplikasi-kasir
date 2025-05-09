@@ -7,6 +7,10 @@
         <div class="navbar-nav ms-auto">
           <router-link to="/dashboard" class="nav-link">Dashboard</router-link>
           <router-link to="/products" class="nav-link active">Produk</router-link>
+          <router-link to="/members" class="nav-link">Members</router-link>
+          <router-link to="/pos" class="nav-link">Kasir</router-link>
+          <router-link to="/transactions" class="nav-link">Riwayat</router-link>
+          <router-link to="/settings" class="nav-link">Settings</router-link>
           <button class="btn btn-outline-danger btn-sm ms-3" @click="logout">Logout</button>
         </div>
       </div>
@@ -44,12 +48,9 @@
                   <td>{{ p.stock }}</td>
                   <td>{{ p.min_stock }}</td>
                   <td>
-                    <button class="btn btn-sm btn-warning me-1" @click="openModal(p)">
-                      <i class="bi bi-pencil"></i>
-                    </button>
-                    <button class="btn btn-sm btn-danger" @click="confirmDelete(p.id)">
-                      <i class="bi bi-trash"></i>
-                    </button>
+                    <button class="btn btn-sm btn-success me-1" @click="openStockModal(p)">+Stok</button>
+                    <button class="btn btn-sm btn-warning me-1" @click="openModal(p)"><i class="bi bi-pencil"></i></button>
+                    <button class="btn btn-sm btn-danger" @click="confirmDelete(p.id)"><i class="bi bi-trash"></i></button>
                   </td>
                 </tr>
                 <tr v-if="products.length === 0">
@@ -182,10 +183,52 @@
         </div>
       </div>
     </div>
+
+    <!-- Modal Adjust Stock -->
+    <div class="modal fade" id="stockModal" tabindex="-1" ref="stockModalEl">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form @submit.prevent="saveStock">
+        <div class="modal-header">
+          <h5 class="modal-title">Penyesuaian Stok</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Form Nama Produk -->
+          <div class="mb-3">
+            <label class="form-label">Produk</label>
+            <input type="text" class="form-control" :value="stockForm.name" readonly />
+          </div>
+
+          <!-- Form Dropdown Masuk/Keluar -->
+          <div class="mb-3">
+            <label class="form-label">Jenis Penyesuaian</label>
+            <select v-model="stockForm.type" class="form-select" required>
+              <option value="masuk">Masuk</option>
+              <option value="keluar">Keluar</option>
+            </select>
+          </div>
+
+          <!-- Form Jumlah -->
+          <div class="mb-3">
+            <label class="form-label">Jumlah</label>
+            <input v-model.number="stockForm.delta" type="number" class="form-control" required />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-primary">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
   </div>
 </template>
 
 <script>
+import { ref, reactive, onMounted } from 'vue';
 import { Modal } from 'bootstrap'
 import Swal from 'sweetalert2'
 
@@ -205,7 +248,10 @@ export default {
           { unit_name: 'pcs', quantity: 1, price_regular: 0, price_member: 0 }
         ]
       },
-      modal: null
+      modal: null,
+      stockForm: { product_id: null, name: '', delta: 0, type: 'masuk' },
+      stockModal: null
+
     }
   },
   computed: {
@@ -305,11 +351,37 @@ export default {
     logout() {
       localStorage.removeItem('user')
       this.$router.push('/login')
-    }
+    },
+
+     // Buka modal penyesuaian stok untuk produk
+    openStockModal(product) {
+      this.stockForm.product_id = product.id;
+      this.stockForm.name = product.name;
+      this.stockForm.type = 'masuk'; // Default ke "masuk"
+      this.stockForm.delta = 0;
+      this.stockModal.show();
+    },
+
+    // Simpan penyesuaian stok (masuk atau keluar)
+    async saveStock() {
+      const adjustment = this.stockForm.type === 'keluar' ? -this.stockForm.delta : this.stockForm.delta;
+      const updatedStock = await window.api.adjustStock(
+        this.stockForm.product_id,
+        adjustment
+      );
+      Swal.fire('Sukses', `Stok diperbarui menjadi ${updatedStock}`, 'success');
+      this.stockModal.hide();
+      this.loadProducts();
+    },
+
+
   },
   mounted() {
-    this.loadProducts()
-  }
+  this.loadProducts()
+  this.productModal = new Modal(this.$refs.modalEl)
+  this.stockModal   = new Modal(this.$refs.stockModalEl)
+}
+
 }
 </script>
 
@@ -318,4 +390,5 @@ export default {
   background: #f1f3f5;
   min-height: calc(100vh - 56px);
 }
+.table-warning { background-color: #fff3cd; }
 </style>
